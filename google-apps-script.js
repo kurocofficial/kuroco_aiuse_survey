@@ -91,7 +91,8 @@ function addDataToSpreadsheet(params) {
         'タイムスタンプ',
         '名前',
         '一番使うAI',
-        'AIの使い方'
+        'AIの使い方',
+        '工夫していること'
       ];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
@@ -109,13 +110,14 @@ function addDataToSpreadsheet(params) {
       timestamp,
       params.name || '',
       params.favoriteAI || '',
-      params.usage || ''
+      params.usage || '',
+      params.tips || ''
     ];
     
     sheet.appendRow(rowData);
     
     // 列幅を自動調整
-    sheet.autoResizeColumns(1, 4);
+    sheet.autoResizeColumns(1, 5);
     
     return { success: true };
     
@@ -140,7 +142,8 @@ function initializeSpreadsheet() {
       'タイムスタンプ',
       '名前',
       '一番使うAI',
-      'AIの使い方'
+      'AIの使い方',
+      '工夫していること'
     ];
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     
@@ -152,7 +155,7 @@ function initializeSpreadsheet() {
     headerRange.setHorizontalAlignment('center');
     
     // 列幅を自動調整
-    sheet.autoResizeColumns(1, 4);
+    sheet.autoResizeColumns(1, 5);
     
     // スプレッドシートのIDをログに出力
     console.log('スプレッドシートが作成されました');
@@ -177,7 +180,8 @@ function addTestData() {
   const testParams = {
     name: 'テスト太郎',
     favoriteAI: 'ChatGPT',
-    usage: '文章作成・編集, プログラミング・コーディング'
+    usage: '文章作成・編集, プログラミング・コーディング',
+    tips: 'できるだけ具体的に指示を出すようにしています。'
   };
   
   const result = addDataToSpreadsheet(testParams);
