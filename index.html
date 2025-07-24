@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIアンケートフォーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .error-message {
+            display: none;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AIアンケートフォーム</h1>
+            <p>あなたのAI利用状況について教えてください</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                アンケートの送信が完了しました。ご協力ありがとうございました！
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                送信中にエラーが発生しました。もう一度お試しください。
+            </div>
+
+            <form id="surveyForm">
+                <div class="form-group">
+                    <label for="name">お名前 <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="favoriteAI">あなたの一番使うAIは？ <span class="required">*</span></label>
+                    <select id="favoriteAI" name="favoriteAI" required>
+                        <option value="">選択してください</option>
+                        <option value="ChatGPT">ChatGPT</option>
+                        <option value="Claude">Claude</option>
+                        <option value="Google Gemini">Google Gemini</option>
+                        <option value="Microsoft Copilot">Microsoft Copilot</option>
+                        <option value="その他">その他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>そのAIの使い方について教えてください（複数選択可）</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="writing" name="usage" value="文章作成・編集">
+                            <label for="writing">文章作成・編集</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="programming" name="usage" value="プログラミング・コーディング">
+                            <label for="programming">プログラミング・コーディング</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="translation" name="usage" value="翻訳">
+                            <label for="translation">翻訳</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="research" name="usage" value="情報収集・調査">
+                            <label for="research">情報収集・調査</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="creative" name="usage" value="創作活動（絵画、音楽など）">
+                            <label for="creative">創作活動（絵画、音楽など）</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="learning" name="usage" value="学習・勉強">
+                            <label for="learning">学習・勉強</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="business" name="usage" value="ビジネス相談">
+                            <label for="business">ビジネス相談</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="other" name="usage" value="その他">
+                            <label for="other">その他</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    アンケートを送信
+                </button>
+
+                <div class="loading" id="loading">
+                    送信中...
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('surveyForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Google Apps ScriptのWebアプリURLを設定（後で置き換え）
+            const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // フォームデータを収集
+                const formData = new FormData();
+                formData.append('name', document.getElementById('name').value);
+                formData.append('favoriteAI', document.getElementById('favoriteAI').value);
+
+                // チェックボックスの値を収集
+                const usageCheckboxes = document.querySelectorAll('input[name="usage"]:checked');
+                const usageValues = Array.from(usageCheckboxes).map(cb => cb.value);
+                formData.append('usage', usageValues.join(', '));
+
+                // UI状態を更新
+                submitBtn.style.display = 'none';
+                loading.style.display = 'block';
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+
+                try {
+                    // Google Apps Scriptに送信
+                    const response = await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // 成功
+                        successMessage.style.display = 'block';
+                        form.reset();
+                    } else {
+                        throw new Error('送信に失敗しました');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    errorMessage.style.display = 'block';
+                } finally {
+                    // UI状態をリセット
+                    submitBtn.style.display = 'block';
+                    loading.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
