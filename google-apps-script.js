@@ -23,7 +23,7 @@ function doPost(e) {
     const params = e.parameter;
     
     // 必須項目のチェック
-    if (!params.name || !params.favoriteAI || !params.promptMethod) {
+    if (!params.name || !params.promptMethod) {
       return ContentService
         .createTextOutput(JSON.stringify({
           status: 'error',
@@ -90,8 +90,8 @@ function addDataToSpreadsheet(params) {
       const headers = [
         'タイムスタンプ',
         '名前',
-        '一番使うAI',
-        'AIの使い方',
+        'AIランキング',
+        '使い方ランキング',
         'AIの良い点',
         'プロンプト入力方法',
         '工夫や独自の使い方'
@@ -145,9 +145,11 @@ function initializeSpreadsheet() {
     const headers = [
       'タイムスタンプ',
       '名前',
-      '一番使うAI',
-      'AIの使い方',
-      '工夫していること'
+      'AIランキング',
+      '使い方ランキング',
+      'AIの良い点',
+      'プロンプト入力方法',
+      '工夫や独自の使い方'
     ];
     sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
     
@@ -183,8 +185,8 @@ function initializeSpreadsheet() {
 function addTestData() {
   const testParams = {
     name: 'テスト太郎',
-    favoriteAI: 'ChatGPT',
-    usage: '文章作成・編集, プログラミング・コーディング',
+    favoriteAI: '1:ChatGPT, 2:Claude',
+    usage: '1:文章作成・編集, 2:プログラミング・コーディング',
     aiAdvantages: 'レスポンスが早くて使いやすいです。',
     promptMethod: '手打ち',
     tips: 'できるだけ具体的に指示を出すようにしています。'

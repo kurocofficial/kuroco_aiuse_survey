@@ -304,15 +304,31 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="favoriteAI">あなたの一番使うAIは？ <span class="required">*</span></label>
-                    <select id="favoriteAI" name="favoriteAI" required>
-                        <option value="">選択してください</option>
-                        <option value="ChatGPT">ChatGPT</option>
-                        <option value="Claude">Claude</option>
-                        <option value="Google Gemini">Google Gemini</option>
-                        <option value="Microsoft Copilot">Microsoft Copilot</option>
-                        <option value="その他">その他</option>
-                    </select>
+                    <label>一番使うAIは？（使用頻度の高い順に並べてください）</label>
+                    <div class="ranking-container">
+                        <div class="ranking-instruction">
+                            💡 左のAI選択肢から、使用頻度の高い順に右の「AIランキング」エリアにドラッグしてください。最大5つまで選択できます。
+                        </div>
+                        <div class="ranking-lists">
+                            <div class="ranking-source">
+                                <div class="ranking-list-title">🤖 AI選択肢</div>
+                                <div class="ranking-item" draggable="true" data-value="ChatGPT">ChatGPT</div>
+                                <div class="ranking-item" draggable="true" data-value="Claude">Claude</div>
+                                <div class="ranking-item" draggable="true" data-value="Google Gemini">Google Gemini</div>
+                                <div class="ranking-item" draggable="true" data-value="Microsoft Copilot">Microsoft Copilot</div>
+                                <div class="ranking-item" draggable="true" data-value="GitHub Copilot">GitHub Copilot</div>
+                                <div class="ranking-item" draggable="true" data-value="Perplexity">Perplexity</div>
+                                <div class="ranking-item" draggable="true" data-value="NotebookLM">NotebookLM</div>
+                                <div class="ranking-item" draggable="true" data-value="その他">その他</div>
+                            </div>
+                            <div class="ranking-target" id="aiRanking">
+                                <div class="ranking-list-title">📊 AIランキング（最大5つ）</div>
+                                <div class="ranking-placeholder" style="color: #999; font-style: italic; padding: 20px; text-align: center;">
+                                    ここにドラッグしてください
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -394,10 +410,13 @@
                 // フォームデータを収集
                 const formData = new FormData();
                 formData.append('name', document.getElementById('name').value);
-                formData.append('favoriteAI', document.getElementById('favoriteAI').value);
 
-                // ランキングの値を収集
-                const usageRanking = getRankingData();
+                // AIランキングの値を収集
+                const aiRanking = getRankingData('aiRanking');
+                formData.append('favoriteAI', aiRanking);
+
+                // 使い方ランキングの値を収集
+                const usageRanking = getRankingData('usageRanking');
                 formData.append('usage', usageRanking);
                 
                 // 新しいフォーム項目の値を収集
@@ -436,8 +455,8 @@
             });
 
             // ランキングデータを取得する関数
-            function getRankingData() {
-                const targetArea = document.getElementById('usageRanking');
+            function getRankingData(targetId) {
+                const targetArea = document.getElementById(targetId);
                 const rankedItems = targetArea.querySelectorAll('.ranking-item.ranked');
                 const rankings = [];
                 
@@ -451,8 +470,67 @@
             // ドラッグ&ドロップシステムの初期化
             function initRankingSystem() {
                 const sourceItems = document.querySelectorAll('.ranking-source .ranking-item');
-                const targetArea = document.getElementById('usageRanking');
-                const placeholder = targetArea.querySelector('.ranking-placeholder');
+                const targetAreas = document.querySelectorAll('.ranking-target');
+
+                // 各ターゲットエリアに対してドロップ機能を設定
+                targetAreas.forEach(targetArea => {
+                    setupDropArea(targetArea);
+                });
+
+                function setupDropArea(targetArea) {
+                    const placeholder = targetArea.querySelector('.ranking-placeholder');
+
+                    // ドロップエリアの設定
+                    targetArea.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        targetArea.style.backgroundColor = '#fff3e0';
+                    });
+
+                    targetArea.addEventListener('dragleave', function(e) {
+                        targetArea.style.backgroundColor = '#fff8e1';
+                    });
+
+                    targetArea.addEventListener('drop', function(e) {
+                        e.preventDefault();
+                        targetArea.style.backgroundColor = '#fff8e1';
+
+                        const value = e.dataTransfer.getData('text/plain');
+                        
+                        // 最大5つまでの制限
+                        const currentRankedItems = targetArea.querySelectorAll('.ranking-item.ranked');
+                        if (currentRankedItems.length >= 5) {
+                            alert('最大5つまでしか選択できません。');
+                            return;
+                        }
+
+                        // 既に追加済みかチェック
+                        const existingItem = Array.from(currentRankedItems).find(item => 
+                            item.getAttribute('data-value') === value
+                        );
+                        if (existingItem) {
+                            alert('この項目は既に選択されています。');
+                            return;
+                        }
+
+                        // プレースホルダーを非表示
+                        if (placeholder && currentRankedItems.length === 0) {
+                            placeholder.style.display = 'none';
+                        }
+
+                        // 新しいアイテムを作成
+                        const newItem = document.createElement('div');
+                        newItem.className = 'ranking-item ranked';
+                        newItem.setAttribute('data-value', value);
+                        newItem.innerHTML = `<span class="ranking-number">${currentRankedItems.length + 1}</span>${value}`;
+                        
+                        // ダブルクリックで削除機能
+                        newItem.addEventListener('dblclick', function() {
+                            removeRankedItem(newItem, targetArea, placeholder);
+                        });
+
+                        targetArea.appendChild(newItem);
+                    });
+                }
 
                 // ドラッグ開始
                 sourceItems.forEach(item => {
@@ -467,60 +545,8 @@
                     });
                 });
 
-                // ドロップエリアの設定
-                targetArea.addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    targetArea.style.backgroundColor = '#fff3e0';
-                });
-
-                targetArea.addEventListener('dragleave', function(e) {
-                    targetArea.style.backgroundColor = '#fff8e1';
-                });
-
-                targetArea.addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    targetArea.style.backgroundColor = '#fff8e1';
-
-                    const value = e.dataTransfer.getData('text/plain');
-                    const html = e.dataTransfer.getData('text/html');
-                    
-                    // 最大5つまでの制限
-                    const currentRankedItems = targetArea.querySelectorAll('.ranking-item.ranked');
-                    if (currentRankedItems.length >= 5) {
-                        alert('最大5つまでしか選択できません。');
-                        return;
-                    }
-
-                    // 既に追加済みかチェック
-                    const existingItem = Array.from(currentRankedItems).find(item => 
-                        item.getAttribute('data-value') === value
-                    );
-                    if (existingItem) {
-                        alert('この項目は既に選択されています。');
-                        return;
-                    }
-
-                    // プレースホルダーを非表示
-                    if (placeholder && currentRankedItems.length === 0) {
-                        placeholder.style.display = 'none';
-                    }
-
-                    // 新しいアイテムを作成
-                    const newItem = document.createElement('div');
-                    newItem.className = 'ranking-item ranked';
-                    newItem.setAttribute('data-value', value);
-                    newItem.innerHTML = `<span class="ranking-number">${currentRankedItems.length + 1}</span>${value}`;
-                    
-                    // ダブルクリックで削除機能
-                    newItem.addEventListener('dblclick', function() {
-                        removeRankedItem(newItem);
-                    });
-
-                    targetArea.appendChild(newItem);
-                });
-
                 // ランクアイテムの削除
-                function removeRankedItem(item) {
+                function removeRankedItem(item, targetArea, placeholder) {
                     item.remove();
                     
                     // 番号を振り直し
