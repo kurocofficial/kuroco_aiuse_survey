@@ -23,7 +23,7 @@ function doPost(e) {
     const params = e.parameter;
     
     // 必須項目のチェック
-    if (!params.name || !params.favoriteAI) {
+    if (!params.name || !params.favoriteAI || !params.promptMethod) {
       return ContentService
         .createTextOutput(JSON.stringify({
           status: 'error',
@@ -92,7 +92,9 @@ function addDataToSpreadsheet(params) {
         '名前',
         '一番使うAI',
         'AIの使い方',
-        '工夫していること'
+        'AIの良い点',
+        'プロンプト入力方法',
+        '工夫や独自の使い方'
       ];
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
@@ -111,13 +113,15 @@ function addDataToSpreadsheet(params) {
       params.name || '',
       params.favoriteAI || '',
       params.usage || '',
+      params.aiAdvantages || '',
+      params.promptMethod || '',
       params.tips || ''
     ];
     
     sheet.appendRow(rowData);
     
     // 列幅を自動調整
-    sheet.autoResizeColumns(1, 5);
+    sheet.autoResizeColumns(1, 7);
     
     return { success: true };
     
@@ -155,7 +159,7 @@ function initializeSpreadsheet() {
     headerRange.setHorizontalAlignment('center');
     
     // 列幅を自動調整
-    sheet.autoResizeColumns(1, 5);
+    sheet.autoResizeColumns(1, 7);
     
     // スプレッドシートのIDをログに出力
     console.log('スプレッドシートが作成されました');
@@ -181,6 +185,8 @@ function addTestData() {
     name: 'テスト太郎',
     favoriteAI: 'ChatGPT',
     usage: '文章作成・編集, プログラミング・コーディング',
+    aiAdvantages: 'レスポンスが早くて使いやすいです。',
+    promptMethod: '手打ち',
     tips: 'できるだけ具体的に指示を出すようにしています。'
   };
   
