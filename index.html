@@ -121,6 +121,94 @@
             font-weight: 400;
         }
 
+        .ranking-container {
+            margin-top: 10px;
+        }
+
+        .ranking-instruction {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #1976d2;
+        }
+
+        .ranking-lists {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .ranking-source, .ranking-target {
+            min-height: 200px;
+            border: 2px dashed #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .ranking-source {
+            background: #f8f9ff;
+        }
+
+        .ranking-target {
+            background: #fff8e1;
+            border-color: #ff9800;
+        }
+
+        .ranking-list-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .ranking-item {
+            background: white;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: move;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .ranking-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+
+        .ranking-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .ranking-item.ranked {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-color: #ff9800;
+        }
+
+        .ranking-number {
+            display: inline-block;
+            background: #ff9800;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .ranking-lists {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .submit-btn {
             width: 100%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -228,43 +316,30 @@
                 </div>
 
                 <div class="form-group">
-                    <label>そのAIの使い方について教えてください（複数選択可）</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="writing" name="usage" value="文章作成・編集">
-                            <label for="writing">文章作成・編集</label>
+                    <label>そのAIの使い方について、使用頻度の高い順に並べてください</label>
+                    <div class="ranking-container">
+                        <div class="ranking-instruction">
+                            💡 左の選択肢から、使用頻度の高いものを右の「使用頻度ランキング」エリアにドラッグしてください。最大5つまで選択できます。
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="programming" name="usage" value="プログラミング・コーディング">
-                            <label for="programming">プログラミング・コーディング</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="translation" name="usage" value="翻訳">
-                            <label for="translation">翻訳</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="research" name="usage" value="情報収集・調査">
-                            <label for="research">情報収集・調査</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="search" name="usage" value="Google検索の代わり">
-                            <label for="search">Google検索の代わり</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="creative" name="usage" value="創作活動（絵画、音楽など）">
-                            <label for="creative">創作活動（絵画、音楽など）</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="learning" name="usage" value="学習・勉強">
-                            <label for="learning">学習・勉強</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="business" name="usage" value="ビジネス相談">
-                            <label for="business">ビジネス相談</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="other" name="usage" value="その他">
-                            <label for="other">その他</label>
+                        <div class="ranking-lists">
+                            <div class="ranking-source">
+                                <div class="ranking-list-title">🔧 使い方の選択肢</div>
+                                <div class="ranking-item" draggable="true" data-value="文章作成・編集">文章作成・編集</div>
+                                <div class="ranking-item" draggable="true" data-value="プログラミング・コーディング">プログラミング・コーディング</div>
+                                <div class="ranking-item" draggable="true" data-value="翻訳">翻訳</div>
+                                <div class="ranking-item" draggable="true" data-value="情報収集・調査">情報収集・調査</div>
+                                <div class="ranking-item" draggable="true" data-value="Google検索の代わり">Google検索の代わり</div>
+                                <div class="ranking-item" draggable="true" data-value="創作活動（絵画、音楽など）">創作活動（絵画、音楽など）</div>
+                                <div class="ranking-item" draggable="true" data-value="学習・勉強">学習・勉強</div>
+                                <div class="ranking-item" draggable="true" data-value="ビジネス相談">ビジネス相談</div>
+                                <div class="ranking-item" draggable="true" data-value="その他">その他</div>
+                            </div>
+                            <div class="ranking-target" id="usageRanking">
+                                <div class="ranking-list-title">📊 使用頻度ランキング（最大5つ）</div>
+                                <div class="ranking-placeholder" style="color: #999; font-style: italic; padding: 20px; text-align: center;">
+                                    ここにドラッグしてください
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -310,6 +385,9 @@
             // Google Apps ScriptのWebアプリURLを設定
             const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby3JoJ6gs6_zHF73V0l9r0VzXbO1J-CRNj25GCXeA4yrrgE84lGJlR6WRP3qS_q-HHk/exec';
 
+            // ドラッグ&ドロップ機能の初期化
+            initRankingSystem();
+
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
@@ -318,10 +396,9 @@
                 formData.append('name', document.getElementById('name').value);
                 formData.append('favoriteAI', document.getElementById('favoriteAI').value);
 
-                // チェックボックスの値を収集
-                const usageCheckboxes = document.querySelectorAll('input[name="usage"]:checked');
-                const usageValues = Array.from(usageCheckboxes).map(cb => cb.value);
-                formData.append('usage', usageValues.join(', '));
+                // ランキングの値を収集
+                const usageRanking = getRankingData();
+                formData.append('usage', usageRanking);
                 
                 // 新しいフォーム項目の値を収集
                 formData.append('aiAdvantages', document.getElementById('aiAdvantages').value);
@@ -357,6 +434,108 @@
                     loading.style.display = 'none';
                 }
             });
+
+            // ランキングデータを取得する関数
+            function getRankingData() {
+                const targetArea = document.getElementById('usageRanking');
+                const rankedItems = targetArea.querySelectorAll('.ranking-item.ranked');
+                const rankings = [];
+                
+                rankedItems.forEach((item, index) => {
+                    rankings.push(`${index + 1}:${item.getAttribute('data-value')}`);
+                });
+                
+                return rankings.join(', ');
+            }
+
+            // ドラッグ&ドロップシステムの初期化
+            function initRankingSystem() {
+                const sourceItems = document.querySelectorAll('.ranking-source .ranking-item');
+                const targetArea = document.getElementById('usageRanking');
+                const placeholder = targetArea.querySelector('.ranking-placeholder');
+
+                // ドラッグ開始
+                sourceItems.forEach(item => {
+                    item.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.setData('text/plain', item.getAttribute('data-value'));
+                        e.dataTransfer.setData('text/html', item.outerHTML);
+                        item.classList.add('dragging');
+                    });
+
+                    item.addEventListener('dragend', function(e) {
+                        item.classList.remove('dragging');
+                    });
+                });
+
+                // ドロップエリアの設定
+                targetArea.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    targetArea.style.backgroundColor = '#fff3e0';
+                });
+
+                targetArea.addEventListener('dragleave', function(e) {
+                    targetArea.style.backgroundColor = '#fff8e1';
+                });
+
+                targetArea.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    targetArea.style.backgroundColor = '#fff8e1';
+
+                    const value = e.dataTransfer.getData('text/plain');
+                    const html = e.dataTransfer.getData('text/html');
+                    
+                    // 最大5つまでの制限
+                    const currentRankedItems = targetArea.querySelectorAll('.ranking-item.ranked');
+                    if (currentRankedItems.length >= 5) {
+                        alert('最大5つまでしか選択できません。');
+                        return;
+                    }
+
+                    // 既に追加済みかチェック
+                    const existingItem = Array.from(currentRankedItems).find(item => 
+                        item.getAttribute('data-value') === value
+                    );
+                    if (existingItem) {
+                        alert('この項目は既に選択されています。');
+                        return;
+                    }
+
+                    // プレースホルダーを非表示
+                    if (placeholder && currentRankedItems.length === 0) {
+                        placeholder.style.display = 'none';
+                    }
+
+                    // 新しいアイテムを作成
+                    const newItem = document.createElement('div');
+                    newItem.className = 'ranking-item ranked';
+                    newItem.setAttribute('data-value', value);
+                    newItem.innerHTML = `<span class="ranking-number">${currentRankedItems.length + 1}</span>${value}`;
+                    
+                    // ダブルクリックで削除機能
+                    newItem.addEventListener('dblclick', function() {
+                        removeRankedItem(newItem);
+                    });
+
+                    targetArea.appendChild(newItem);
+                });
+
+                // ランクアイテムの削除
+                function removeRankedItem(item) {
+                    item.remove();
+                    
+                    // 番号を振り直し
+                    const remainingItems = targetArea.querySelectorAll('.ranking-item.ranked');
+                    remainingItems.forEach((item, index) => {
+                        const numberSpan = item.querySelector('.ranking-number');
+                        numberSpan.textContent = index + 1;
+                    });
+
+                    // プレースホルダーを再表示
+                    if (remainingItems.length === 0 && placeholder) {
+                        placeholder.style.display = 'block';
+                    }
+                }
+            }
         });
     </script>
 </body>
