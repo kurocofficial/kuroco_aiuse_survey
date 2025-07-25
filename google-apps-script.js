@@ -22,6 +22,9 @@ function doPost(e) {
     // パラメータを取得
     const params = e.parameter;
     
+    // デバッグ用ログ
+    console.log('受信したパラメータ:', JSON.stringify(params));
+    
     // 必須項目のチェック
     if (!params.name || !params.promptMethod) {
       return ContentService
@@ -188,7 +191,7 @@ function addTestData() {
     favoriteAI: '1:ChatGPT, 2:Claude',
     usage: '1:文章作成・編集, 2:プログラミング・コーディング',
     aiAdvantages: 'レスポンスが早くて使いやすいです。',
-    promptMethod: '手打ち',
+    promptMethod: '毎回手打ちで入力',
     tips: 'できるだけ具体的に指示を出すようにしています。'
   };
   

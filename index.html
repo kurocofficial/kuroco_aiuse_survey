@@ -289,13 +289,6 @@
         </div>
 
         <div class="form-container">
-            <div class="success-message" id="successMessage">
-                アンケートの送信が完了しました。ご協力ありがとうございました！
-            </div>
-
-            <div class="error-message" id="errorMessage">
-                送信中にエラーが発生しました。もう一度お試しください。
-            </div>
 
             <form id="surveyForm">
                 <div class="form-group">
@@ -366,11 +359,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="promptMethod">プロンプトを打つときは初手手打ちが多いですか？フォーマットを用意していますか？ <span class="required">*</span></label>
+                    <label for="promptMethod">プロンプトの入力方法はどちらが多いですか？ <span class="required">*</span></label>
                     <select id="promptMethod" name="promptMethod" required>
                         <option value="">選択してください</option>
-                        <option value="手打ち">手打ち</option>
-                        <option value="フォーマットを用意">フォーマットを用意</option>
+                        <option value="毎回手打ちで入力">毎回手打ちで入力</option>
+                        <option value="テンプレートやフォーマットを使用">テンプレートやフォーマットを使用</option>
                     </select>
                 </div>
 
@@ -387,6 +380,14 @@
                     送信中...
                 </div>
             </form>
+            
+            <div class="success-message" id="successMessage">
+                アンケートの送信が完了しました。ご協力ありがとうございました！
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                送信中にエラーが発生しました。もう一度お試しください。
+            </div>
         </div>
     </div>
 
